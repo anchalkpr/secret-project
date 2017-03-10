@@ -1,5 +1,6 @@
 import urllib.request
 from bs4 import BeautifulSoup
+import json
 
 
 def make_http_call(url):
@@ -17,3 +18,14 @@ def extract_comments_text(html_data):
         extracted_comments.append(row.text)
 
     return extracted_comments
+
+
+def extract_json(url):
+    """
+    retrieves data from url response, and creates a json object
+    :param url: the url to be queried
+    :return: packages http response into Json object
+    """
+    html_data = make_http_call(url)
+    json_data = json.loads(html_data)
+    return json_data

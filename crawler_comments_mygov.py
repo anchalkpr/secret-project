@@ -23,7 +23,7 @@ def extract_comments(topic_name):
                                 '&view_base_path=comment_pdf_export&pager_element=1&sort_by=created&sort_order=DESC' + \
                                 '&page=0%2C' + str(i)
 
-            json_data = extract_json(url_ajax_comments)
+            json_data = crawler.extract_json(url_ajax_comments)
             html_data = json_data[1]['data']
 
             if re.findall('pager-load-more-empty', html_data, re.I):
@@ -36,17 +36,6 @@ def extract_comments(topic_name):
 def extract_view_args(html):
     view_args = re.search("view_args\":\"([0-9]+)", html)
     return view_args.group(1)
-
-
-def extract_json(url):
-    """
-    retrieves data from url response, and creates a json object
-    :param url: the url to be queried
-    :return: packages http response into Json object
-    """
-    html_data = crawler.make_http_call(url)
-    json_data = json.loads(html_data)
-    return json_data
 
 
 def extract_votes(html_data, is_upvote):
