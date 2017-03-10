@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import codecs
 
 
-def extract_comments(topic_name, view_args):
+def extract_comments(topic_name):
     filename = topic_name + '.txt'
     with codecs.open(filename, "w", "utf-8") as output_file:
         # for initial set of comments
@@ -12,6 +12,8 @@ def extract_comments(topic_name, view_args):
         data_main = make_http_call(url_main)
         output_file.write(extract_comments_and_metadata(data_main))
 
+        view_args = extract_view_args(data_main)
+        
         i = 1
         # for comments loaded by ajax calls
         while True and i < 3:  # TODO remove i < 3
@@ -29,6 +31,11 @@ def extract_comments(topic_name, view_args):
             output_file.write(extract_comments_and_metadata(html_data))
     output_file.close()
 
+
+def extract_view_args(html):
+    view_args = re.search("view_args\":\"([0-9]+)", html)
+    return view_args.group(1)
+    
     
 def extract_json(url):
     """
@@ -99,4 +106,4 @@ def extract_comments_and_metadata(html_data):
     return extracted_data
 
 
-extract_comments('human-trafficking-prevention-agency-htpa', '795')
+extract_comments('human-trafficking-prevention-agency-htpa')
