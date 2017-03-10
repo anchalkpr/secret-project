@@ -16,7 +16,7 @@ def extract_comments(topic_name):
         
         i = 1
         # for comments loaded by ajax calls
-        while True and i < 3:  # TODO remove i < 3
+        while True:  
             url_ajax_comments = 'https://www.mygov.in/views/ajax/?view_name=view_comments&view_display_id=block_2' + \
                                 '&view_args=' + view_args + '&view_path=node%2F' + view_args + \
                                 '&view_base_path=comment_pdf_export&pager_element=1&sort_by=created&sort_order=DESC' + \
