@@ -2,6 +2,7 @@ import re, json
 import urllib.request
 from bs4 import BeautifulSoup
 import codecs
+from nlp_project import crawler_helper as crawler
 
 
 def extract_comments(topic_name):
@@ -9,14 +10,14 @@ def extract_comments(topic_name):
     with codecs.open(filename, "w", "utf-8") as output_file:
         # for initial set of comments
         url_main = 'https://www.mygov.in/group-issue/' + topic_name + '/'
-        data_main = make_http_call(url_main)
+        data_main = crawler.make_http_call(url_main)
         output_file.write(extract_comments_and_metadata(data_main))
 
         view_args = extract_view_args(data_main)
-        
+
         i = 1
         # for comments loaded by ajax calls
-        while True:  
+        while True and i < 3:  # TODO remove i < 3
             url_ajax_comments = 'https://www.mygov.in/views/ajax/?view_name=view_comments&view_display_id=block_2' + \
                                 '&view_args=' + view_args + '&view_path=node%2F' + view_args + \
                                 '&view_base_path=comment_pdf_export&pager_element=1&sort_by=created&sort_order=DESC' + \
@@ -35,34 +36,17 @@ def extract_comments(topic_name):
 def extract_view_args(html):
     view_args = re.search("view_args\":\"([0-9]+)", html)
     return view_args.group(1)
-    
-    
+
+
 def extract_json(url):
     """
     retrieves data from url response, and creates a json object
     :param url: the url to be queried
     :return: packages http response into Json object
     """
-    html_data = make_http_call(url)
+    html_data = crawler.make_http_call(url)
     json_data = json.loads(html_data)
     return json_data
-
-
-def make_http_call(url):
-    f = urllib.request.urlopen(url)
-    data = f.read()
-
-    encoding = f.info().get_content_charset('utf-8')
-    return data.decode(encoding)
-
-
-def extract_comments_text(html_data):
-    soup = BeautifulSoup(html_data, "html.parser")
-    extracted_comments = []
-    for row in soup.find_all('div', attrs={"class": "comment_body"}):
-        extracted_comments.append(row.text)
-
-    return extracted_comments
 
 
 def extract_votes(html_data, is_upvote):
@@ -89,7 +73,7 @@ def extract_comments_and_metadata(html_data):
     # eg. - <a href="/" class="hashtag_comments" data="#NDTV">#NDTV</a>
 
     # beautifulsoup to parse html tags
-    comments = extract_comments_text(html_data)
+    comments = crawler.extract_comments_text(html_data)
     upvotes = extract_votes(html_data, True)
     downvotes = extract_votes(html_data, False)
 
