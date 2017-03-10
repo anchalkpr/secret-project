@@ -6,10 +6,11 @@ from nlp_project import crawler_helper as crawler
 
 
 def extract_comments(topic_name):
-    filename = topic_name + '.txt'
+    filename = 'comments/' + topic_name + '.txt'
     with codecs.open(filename, "w", "utf-8") as output_file:
         # for initial set of comments
         url_main = 'https://www.mygov.in/group-issue/' + topic_name + '/'
+        print(url_main)
         data_main = crawler.make_http_call(url_main)
         output_file.write(extract_comments_and_metadata(data_main))
 
@@ -17,7 +18,7 @@ def extract_comments(topic_name):
 
         i = 1
         # for comments loaded by ajax calls
-        while True and i < 3:  # TODO remove i < 3
+        while True: 
             url_ajax_comments = 'https://www.mygov.in/views/ajax/?view_name=view_comments&view_display_id=block_2' + \
                                 '&view_args=' + view_args + '&view_path=node%2F' + view_args + \
                                 '&view_base_path=comment_pdf_export&pager_element=1&sort_by=created&sort_order=DESC' + \
@@ -79,4 +80,13 @@ def extract_comments_and_metadata(html_data):
     return extracted_data
 
 
-extract_comments('human-trafficking-prevention-agency-htpa')
+def run_extract_batch():
+    comments_file = 'topics_list.txt'
+    with open(comments_file) as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    for topic in content:
+        extract_comments(topic)
+
+
+run_extract_batch()
