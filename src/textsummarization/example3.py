@@ -1,6 +1,6 @@
 import pickle
-from topicModel import TopicModel
-from documentSummaries import DocumentSummaries
+from topicModel3 import TopicModel
+from documentSummaries3 import DocumentSummaries
 
 def getFederalDockets():
     dockets = ['discussion-simultaneous-elections']

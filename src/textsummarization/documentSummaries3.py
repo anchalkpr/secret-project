@@ -1,4 +1,4 @@
-from topicModel import tokenizer
+from topicModel3 import tokenizer
 import nltk.data
 import numpy as np
 
