@@ -68,13 +68,13 @@ def extract_comments_and_metadata(html_data):
     downvotes = extract_votes(html_data, False)
 
     extracted_data = ''
-    nun_comments = len(comments)
-    for i in range(nun_comments):
+    num_comments = len(comments)
+    for i in range(num_comments):
         new_extracted_data = str(upvotes[i])
         new_extracted_data += ' '
         new_extracted_data += str(downvotes[i])
         new_extracted_data += ' '
-        new_extracted_data += comments[i]
+        new_extracted_data += comments[i].replace('\r', '').replace('\n', '')
         new_extracted_data += '\n'
         extracted_data += new_extracted_data
     return extracted_data
