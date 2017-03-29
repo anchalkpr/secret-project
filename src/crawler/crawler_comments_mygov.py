@@ -2,7 +2,7 @@ import re, json
 import urllib.request
 from bs4 import BeautifulSoup
 import codecs
-from nlp_project import crawler_helper as crawler
+from crawler import crawler_helper as crawler
 
 
 def extract_comments(topic_name):

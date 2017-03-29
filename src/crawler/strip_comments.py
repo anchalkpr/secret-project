@@ -8,6 +8,7 @@ p = re.compile("\d+ \d+ ")
 DATA_DIR = "../../Data/"
 STRIPPED_DATA_DIR = "../../Stripped_Data/"
 
+
 def strip_data(inputFile):
     output_file_data = []
     output_line = ""
@@ -21,6 +22,7 @@ def strip_data(inputFile):
         output_line += line + " "
         
     return output_file_data[1:]
+
 
 def read_files():
     try:
