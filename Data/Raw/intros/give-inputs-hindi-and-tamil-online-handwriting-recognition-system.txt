@@ -1,0 +1,16 @@
+A system designed especially for recognizing the handwritings. Any stylus based inputting device can be used to input text using handwriting. All the stylus based devices provide basic data in the form of X-Y co-ordinates called as stroke/trace. This handwritten text in the form of stroke/trace is converted into editable text thus bypassing the need for a keyboard for text entry. This system uses handwritten recognition engine which is specifically trained on sample of handwriting styles. 
+Benefits/Applications Areas:
+- Form-Filling Applications
+- Census Data Collection
+- Other Applications( It can be used for variety of applications such as user information collection by Anganwadi workers and primary health centres, accident and FIR reports by  police and note taking etc. It is also useful for sending test messages, language learning games for kids, as digital transcribers for PDA’s and Tablet PC’s, etc.
+Devices supported under this technology:
+- Any mobile phone with a stylus input
+- Any tablet device/ Any stylus based digital wiring device
+This project is funded by DeitY, Government of India under TDIL program - "Technology Development for Indian Languages".
+Please help us improve Online Handwriting Recognition System by providing your valuable comments and suggestions. 
+Keyboard with handwritten recognition system is available for download.
+Please visit below links to download Hindi and Tamil Keyboard with Handwritten Recognition.
+Android: Click here for Hindi / Click here for Tamil 
+Windows: Click here for Hindi / Click here for Tamil
+To know more about the system, kindly visit website www.tdil-dc.in
+The last date of submission is 8th January, 2016.
