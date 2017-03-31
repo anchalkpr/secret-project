@@ -5,12 +5,29 @@ from collections import Counter
 from gensim import models, corpora
 from gensim.models import Phrases
 import numpy as np
-
+import polyglot
+from polyglot.text import Text, Word
+import codecs
 
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
 
-def tokenizer(document):
+CONFIG_DIR = "config/"
+
+def clean_text(text):
+    text = text.replace(u"\u0964", '')
+    text = text.replace(u",", '')
+    text = text.replace(u".", '')
+    text = text.replace(u"/", '')
+    text = text.replace(u"?", '')
+    text = text.replace(u"-", '')
+    return text
+
+def tokenizer_hindi(document):
+    tokens = Text(clean_text(document))
+    return tokens.words
+
+def tokenizer_english(document):
     """
     input: a string
     output: a list of strings
@@ -77,7 +94,7 @@ class TopicModel(object):
         list of dominant topic ids, in decreasing order of dominance
     '''
 
-    def __init__(self, num_topics=100, min_word_count=20, 
+    def __init__(self, language, num_topics=100, min_word_count=20, 
                  top_most_common_words=10, min_doc_length=40, 
                  max_doc_length=1000, random_state=None):
         self.num_topics = num_topics
@@ -91,17 +108,20 @@ class TopicModel(object):
         self.random_state = random_state
         
         # natural language processing
-        self.stop_words = self.getEnglishStopWords()
+        if language == "hindi":
+            self.stop_words = self.get_stop_words_hindi()
+        else:
+            self.stop_words = self.getEnglishStopWords()
         self.bigramizer = Phrases()
         
-    def fit(self, documents):
+    def fit(self, documents, language):
         '''
         parameters:
           documents: list of strings, each represents a document
         '''
         
         # tokens, dictionary, corpus for LDA
-        self.tokens = self.preProcessCorpus(documents)
+        self.tokens = self.preProcessCorpus(documents, language)
         self.dictionary = corpora.Dictionary(self.tokens)
         self.corpus = [self.dictionary.doc2bow(text) for text in self.tokens]
         
@@ -159,6 +179,11 @@ class TopicModel(object):
         for item in 'abcdefghijklmnopqrstuvwxyz':
             stop_words.add(item)
         return stop_words
+        
+    def get_stop_words_hindi(self):
+        with codecs.open(CONFIG_DIR + "hindi_stopwords.txt", mode='r', encoding="utf-8") as stopWordsFile:
+            stopWords = stopWordsFile.readlines()
+        return stopWords
     
     
     @staticmethod
@@ -187,7 +212,7 @@ class TopicModel(object):
         return lowFreqTokens
 
 
-    def preProcessCorpus(self, documents, min_word_count=None, 
+    def preProcessCorpus(self, documents, language, min_word_count=None, 
                          top_most_common_words=None, min_doc_length=None, 
                          max_doc_length=None):
         '''
@@ -215,7 +240,10 @@ class TopicModel(object):
         if max_doc_length is None:
             max_doc_length = self.max_doc_length
         
-        tokens = [tokenizer(document) for document in documents]
+        if language == "english":
+            tokens = [tokenizer_english(document) for document in documents]
+        else:
+            tokens = [tokenizer_hindi(document) for document in documents]
         
         # exclude comments that are longer than max_doc_length
         tokens = [tkn for tkn in tokens if len(tkn) < max_doc_length]
