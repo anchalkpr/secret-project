@@ -1,17 +1,18 @@
 <ROUGE_EVAL version="1.55">
-    <EVAL ID="TASK_ENGLISH">
-        <MODEL-ROOT>/Users/anshulip/GitHub/secret-project/models</MODEL-ROOT>
-        <PEER-ROOT>/Users/anshulip/GitHub/secret-project/systems</PEER-ROOT>
+    <EVAL ID="give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_summary">
+        <MODEL-ROOT>models</MODEL-ROOT>
+        <PEER-ROOT>systems</PEER-ROOT>
         <INPUT-FORMAT TYPE="SEE">  </INPUT-FORMAT>
 
         <PEERS>
-            <P ID="0">0.html</P>
-            <P ID="1">1.html</P>
+            <P ID="1">give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_1.html</P>
+            <P ID="2">give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_2.html</P>
+            <p ID="3">give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_3.html</p>
         </PEERS>
 
         <MODELS>
-            <M ID="1">1.html</M>
-            <M ID="2">2.html</M>
+            <M ID="1">give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_baseline.html</M>
+            <M ID="2">give-inputs-hindi-and-tamil-online-handwriting-recognition-system_english_LDA.html</M>
         </MODELS>
 
     </EVAL>
