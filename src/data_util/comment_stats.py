@@ -20,33 +20,33 @@ num_of_files = len(file_set)
 while len(file_set) > 0:
     file_name = file_set.pop()
 
-    print "File name: " + file_name
+    print ("File name: " + file_name)
 
     english_file_path = os.path.join(path_to_dir, file_name+"_english.txt")
     with codecs.open(english_file_path, 'r', encoding="utf-8") as file:
         data_list = file.readlines()
         total_english_count += len(data_list)
-        print "Number of english comments: " + str(len(data_list))
+        print ("Number of english comments: " + str(len(data_list)))
 
     hindi_file_path = os.path.join(path_to_dir, file_name+"_hindi.txt")
     with codecs.open(hindi_file_path, 'r', encoding="utf-8") as file:
         data_list = file.readlines()
         total_hindi_count += len(data_list)
-        print "Number of hindi comments: " + str(len(data_list))
+        print ("Number of hindi comments: " + str(len(data_list)))
 
     unknown_file_path = os.path.join(path_to_dir, file_name+"_unknown.txt")
     if os.path.isfile(unknown_file_path):
         with codecs.open(unknown_file_path, 'r', encoding="utf-8") as file:
             data_list = file.readlines()
             total_unknown_count += len(data_list)
-            print "Number of unknown comments: " + str(len(data_list))
+            print ("Number of unknown comments: " + str(len(data_list)))
     else:
-        print "Number of unknown comments: 0"
+        print ("Number of unknown comments: 0")
 
-    print
+    print ()
 
-print "Number of files: " + str(num_of_files)
-print "Total number of English comments: " + str(total_english_count)
-print "Total number of Hindi comments: " + str(total_hindi_count)
-print "Total number of Unknown comments: " + str(total_unknown_count)
+print ("Number of files: " + str(num_of_files))
+print ("Total number of English comments: " + str(total_english_count))
+print ("Total number of Hindi comments: " + str(total_hindi_count))
+print ("Total number of Unknown comments: " + str(total_unknown_count))
 

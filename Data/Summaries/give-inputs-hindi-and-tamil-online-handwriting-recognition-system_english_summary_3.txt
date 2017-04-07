@@ -1,0 +1,4 @@
+The handwriting recognition system should be developed for other languages. 
+For Tamil, the tool works okay but the accuracy is low and fails to recognize the words if they are written at an angle. 
+Developing a speech to text application will be more helpful than a handwriting recognition system since a lot of people do not use a stylus. 
+People need to control pollution and we need to encourage people to use environmentally friendly sources of energy such as solar and bio gas.  

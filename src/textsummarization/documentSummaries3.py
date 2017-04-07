@@ -1,14 +1,20 @@
-from topicModel3 import tokenizer
+from topicModel3 import tokenizer_english, tokenizer_hindi
 import nltk.data
 import numpy as np
+import polyglot
+from polyglot.text import Text, Word
+import codecs
+
+OUTPUT_DIR = "summaries/"
 
 class topicSummary(object):
 
-    def __init__(self, topic_id, terms, weights, sentences):
+    def __init__(self, language, topic_id, terms, weights, sentences):
         self.topic_id = topic_id
         self.terms = terms
         self.weights = weights
         self.sentences = sentences
+        self.language = language
 
     def __str__(self):
         if self.sentences is None or len(self.sentences) == 0:
@@ -89,31 +95,25 @@ class DocumentSummaries(object):
         self.bigramizer = model.bigramizer
     
     
-    def summarize(self, documents):
+    def summarize(self, documents, language):
         
-        #tokens = [tokenizer(document) for document in documents]
+        if language == "english":
+            tokens = [tokenizer_english(document) for document in documents]
+        else:
+            tokens = [tokenizer_hindi(document) for document in documents]
         #print("documents: %s" %documents)
-        tokens = []
-        for document in documents:
-            tk = tokenizer(document)
-            print("tokens: %s", tk)
-            tokens.append(tk)
         #print("bigramizer: %s" %self.bigramizer)
-        #tokens = [self.bigramizer[tkn] for tkn in tokens]
-        tk = []
-        for tkn in tokens:
-            #print("###: %s" %self.bigramizer[tkn])
-            tk.append(self.bigramizer[tkn])
-        tokens = tk
+        tokens = [self.bigramizer[tkn] for tkn in tokens]
+
         corpus = [self.dictionary.doc2bow(tkn) for tkn in tokens]
         
         self.dominant_topic_ids = self.getDominantTopics(corpus)
             
-        self.sentence_groups = self.splitIntoSentences(documents)
+        self.sentence_groups = self.splitIntoSentences(documents, language)
             
-        self.distributions = self.getSentenceDistributions()
+        self.distributions = self.getSentenceDistributions(language)
             
-        self.summary_data = self.sentenceSelection(verbose=False)
+        self.summary_data = self.sentenceSelection(language, verbose=False)
             
     
     def getDominantTopics(self, corpus):
@@ -135,7 +135,7 @@ class DocumentSummaries(object):
         return dominant_topic_ids.tolist()
 
     
-    def splitIntoSentences(self, documents, MIN_SENTENCE_LENGTH = 8, MAX_SENTENCE_LENGTH = 25):
+    def splitIntoSentences(self, documents, language, MIN_SENTENCE_LENGTH = 8, MAX_SENTENCE_LENGTH = 50):
         # splits a document into sentences. Discards sentences that are too short or too long.
         # input: a list of documents
         # output: a list of lists of tuples (sentence #, sentence)
@@ -149,7 +149,13 @@ class DocumentSummaries(object):
         #
         sentence_groups = list()
         for document in documents:
-            sentences = sentence_detector.tokenize(document)
+            if language == "english":
+                sentences = sentence_detector.tokenize(document)
+            else:
+                sentences = []
+                text = Text(document)
+                for s in text.sentences:
+                    sentences.append(s.raw)
             sentence_group = list()
             for k, sentence in enumerate(sentences):
                 length = len(sentence.split())
@@ -159,7 +165,7 @@ class DocumentSummaries(object):
         return sentence_groups
     
     
-    def getSentenceDistributions(self):
+    def getSentenceDistributions(self, language):
         # computes topic distributions for each sentence
         # output: list of lists
         # each list corresponds to a document and stores a tuple per sentence
@@ -173,7 +179,10 @@ class DocumentSummaries(object):
             sentence_distributions = list()
             for k, sentence in sentences:
                 #print("$$$$$$$")
-                tkns = tokenizer(sentence)
+                if language == "english":
+                    tkns = tokenizer_english(sentence)
+                else:
+                    tkns = tokenizer_hindi(sentence)
                 if tkns is None:
                     continue
                 bow = get_bow(tkns)
@@ -192,7 +201,7 @@ class DocumentSummaries(object):
         return distributions
     
     
-    def sentenceSelection(self, verbose=False):
+    def sentenceSelection(self, language, verbose=False):
         
         results_per_docket = dict()
         results_per_docket['number_of_documents'] = len(self.sentence_groups)
@@ -207,7 +216,7 @@ class DocumentSummaries(object):
             terms = [t[0] for t in topic_terms]
             weights = [w[1] for w in topic_terms]
             
-            ts = topicSummary(topic_id = dtid, terms=terms, 
+            ts = topicSummary(language = language, topic_id = dtid, terms=terms, 
                               weights=weights, sentences=top_sentences)
             
             if verbose:
@@ -283,44 +292,57 @@ class DocumentSummaries(object):
         return filtered_by_topic_id
     
     
-    def display(self):
+    def display(self, doc_id):
         '''
         '''
-        print ('The dominant topics in descending order are:')
-        for dtid in self.dominant_topic_ids:
-            print (dtid,)
-        print ('')
-        
-        for k in range(self.num_dominant_topics):
-            if k!=None:
-                #print("here")
-                dtid = self.dominant_topic_ids[k]
-                topicSummary = self.summary_data[dtid]
-                terms = topicSummary.terms
-                if not terms:
-                    #print("1111")
-                    continue
-                weights = topicSummary.weights
-                num_terms = len(terms)
-                sentences = topicSummary.sentences
-                if not sentences:
-                    #print("2222")
-                    continue
+        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_summary" + ".txt"
+        with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
+            print ('The dominant topics in descending order are:')
+            outputFile.write("The dominant topics in descending order are:\n")
+            for dtid in self.dominant_topic_ids:
+                print (dtid,)
+                outputFile.write("%s" %dtid)
+            print ('')
+            outputFile.write('\n')
             
-                print ('\nTopic {:d}'.format(dtid))
-                print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
-                for term, weight in zip(terms, weights):
-                    print (' * {:s} ({:5.4f})'.format(term, weight))
+            for k in range(self.num_dominant_topics):
+                if k!=None:
+                    dtid = self.dominant_topic_ids[k]
+                    topicSummary = self.summary_data[dtid]
+                    terms = topicSummary.terms
+                    if not terms:
+                        #print("1111")
+                        continue
+                    weights = topicSummary.weights
+                    num_terms = len(terms)
+                    sentences = topicSummary.sentences
+                    if not sentences:
+                        #print("2222")
+                        continue
                 
-                print ('\n\nThe selected sentences are:',)
-                n_sentences = len(sentences)
-                for j in range(n_sentences):
-                    item = sentences[j]
-                    print ('{:d},'.format(item[0]),)
-                print (' ')
-                for j in range(n_sentences):
-                    item = sentences[j]
-                    sentence = item[2]
-                    print (sentence)
-                print()
+                    print ('\nTopic {:d}'.format(dtid))
+                    outputFile.write('\n\nTopic {:d}'.format(dtid))
+                    print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
+                    outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
+                    for term, weight in zip(terms, weights):
+                        print (' * {:s} ({:5.4f})'.format(term, weight))
+                        outputFile.write('\n')
+                        outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
+                    
+                    print ('\n\nThe selected sentences are:',)
+                    outputFile.write('\n\nThe selected sentences are:\n')
+                    n_sentences = len(sentences)
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        outputFile.write('{:d},'.format(item[0]))
+                        print ('{:d},'.format(item[0]),)
+                    print (' ')
+                    outputFile.write('\n ')
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        sentence = item[2]
+                        print (sentence)
+                        outputFile.write(sentence)
+                    print()
+                    outputFile.write('\n')
 
