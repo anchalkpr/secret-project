@@ -1,0 +1,18 @@
+<ROUGE_EVAL version="1.55">
+    <EVAL ID="TASK_ENGLISH">
+        <MODEL-ROOT>/Users/anshulip/GitHub/secret-project/models</MODEL-ROOT>
+        <PEER-ROOT>/Users/anshulip/GitHub/secret-project/systems</PEER-ROOT>
+        <INPUT-FORMAT TYPE="SEE">  </INPUT-FORMAT>
+
+        <PEERS>
+            <P ID="0">0.html</P>
+            <P ID="1">1.html</P>
+        </PEERS>
+
+        <MODELS>
+            <M ID="1">1.html</M>
+            <M ID="2">2.html</M>
+        </MODELS>
+
+    </EVAL>
+</ROUGE_EVAL>
