@@ -1,7 +1,9 @@
 import sys, os, ntpath, codecs
 
 
-html_template = "<html>\n<head>\n<title>TITLE_TOKEN</title>\n</head>\n<body bgcolor=\"white\">\nPARAGRAPHS_TOKEN</body>\n</html>"
+html_template = "<html>" + \
+                "\n<head>\n<title>TITLE_TOKEN</title>\n</head>\n<body bgcolor=\"white\">\nPARAGRAPHS_TOKEN</body>\n" + \
+                "</html>"
 paragraph_template = "<a name=\"NUM_TOKEN\">[NUM_TOKEN]</a> <a href=\"#NUM_TOKEN\" id=NUM_TOKEN>SENTENCE_TOKEN</a>\n"
 html_files_path_system = "/Users/anshulip/GitHub/secret-project/systems/"
 html_files_path_model = "/Users/anshulip/GitHub/secret-project/models/"

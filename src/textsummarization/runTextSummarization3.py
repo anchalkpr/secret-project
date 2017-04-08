@@ -6,8 +6,9 @@ import os
 import traceback
 import codecs
 
-#DATA_DIR = "../../Data/Transliterated and segregated/"
+#DATA_DIR = "../../Data/transliterated_and_segregated/"
 DATA_DIR = "example_data/"
+
 
 def getDocs(language):
     try:
@@ -16,6 +17,7 @@ def getDocs(language):
     except:
         errorMsg = "ERROR: Error while I/O %s" %(traceback.format_exc())
         print(errorMsg)
+
 
 def getComments(language):
     try:

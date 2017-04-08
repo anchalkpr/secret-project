@@ -4,8 +4,11 @@ import codecs
 from crawler import crawler_helper as crawler
 
 
+# TODO modify for Hindi and English
+
+
 def extract_intros(topic_name):
-    filename = '../../Data/Raw/intros/' + topic_name + '.txt'
+    filename = '../../data/raw/intros/' + topic_name + '.txt'
     with codecs.open(filename, "w", "utf-8") as output_file:
         # for introductory paragraph for topics
         url_main = 'https://www.mygov.in/group-issue/' + topic_name + '/'
@@ -28,7 +31,7 @@ def extract_intros_text(html_data):
 
 
 def run_extract_batch():
-    comments_file = '../../Data/topics_list.txt'
+    comments_file = '../../data/topics_list.txt'
     with open(comments_file) as f:
         content = f.readlines()
     content = [x.strip() for x in content]
