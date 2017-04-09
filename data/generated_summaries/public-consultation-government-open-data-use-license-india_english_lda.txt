@@ -1,0 +1,5 @@
+I feel little skeptical on this Open data initiative, As we all know Govt.
+ But due care should be taken rgarding security of such data and one cant access private data through this platform.
+ Should have API for the users to access the data.
+ No need of sharing this type of data to public.
+ 
