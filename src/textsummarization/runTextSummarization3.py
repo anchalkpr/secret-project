@@ -35,7 +35,7 @@ def getComments(language):
         print(errorMsg)
 
 
-def main(num_topics=10):
+def main(num_topics=100):
     languages = ["english", "hindi"]
     
     for language in languages:
@@ -46,7 +46,7 @@ def main(num_topics=10):
         topicModel.fit(comments, language)
 
         for docName, document in discussionAndComments.items():
-            docSummaries = DocumentSummaries(topicModel, num_dominant_topics=3, number_of_sentences=4)
+            docSummaries = DocumentSummaries(topicModel, num_dominant_topics=1, number_of_sentences=4)
             docSummaries.summarize(document, language)
             docSummaries.display(docName)
 

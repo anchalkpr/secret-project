@@ -1,4 +1,5 @@
 import re
+import sys
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from collections import Counter
@@ -9,10 +10,13 @@ import polyglot
 from polyglot.text import Text, Word
 import codecs
 
+CONFIG_DIR = "config/"
+sys.path.extend([CONFIG_DIR])
+from hindi_stemmer import hi_stem
+
+
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
-
-CONFIG_DIR = "config/"
 
 def clean_text(text):
     text = text.replace(u"\u0964", '')
@@ -21,11 +25,17 @@ def clean_text(text):
     text = text.replace(u"/", '')
     text = text.replace(u"?", '')
     text = text.replace(u"-", '')
+    text = text.replace(u":", '')
+    text = text.replace(u"(", '')
+    text = text.replace(u")", '')
+    text = text.replace(u",", '')
+    text = text.replace(u";", '')
     return text
 
 def tokenizer_hindi(document):
     tokens = Text(clean_text(document))
-    return tokens.words
+    tokens = [hi_stem(tkn) for tkn in tokens.words]
+    return tokens
 
 def tokenizer_english(document):
     """
@@ -94,7 +104,7 @@ class TopicModel(object):
         list of dominant topic ids, in decreasing order of dominance
     '''
 
-    def __init__(self, language, num_topics=100, min_word_count=20, 
+    def __init__(self, language, num_topics=100, min_word_count=8, 
                  top_most_common_words=10, min_doc_length=40, 
                  max_doc_length=1000, random_state=None):
         self.num_topics = num_topics
