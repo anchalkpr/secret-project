@@ -296,6 +296,7 @@ class DocumentSummaries(object):
     def display(self, doc_id):
         '''
         '''
+        print("summarizing discussion: %s" %doc_id)
         outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
         with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
             print ('The dominant topics in descending order are:')
