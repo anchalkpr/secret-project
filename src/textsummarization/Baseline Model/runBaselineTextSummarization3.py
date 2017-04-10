@@ -3,12 +3,13 @@ import traceback
 import codecs
 from baselineModel3 import document_summarizer
 
-#DATA_DIR = "../../../Data/Transliterated and segregated/"
-DATA_DIR = "example_data/"
+DATA_DIR = "../../../Data/transliterated_and_segregated/"
+#DATA_DIR = "example_data/"
 
 def getDocs(language):
     try:
         inputFilesList = [inputfile for inputfile in os.listdir(DATA_DIR) if inputfile.endswith("_"+language+".txt")]
+        print(inputFilesList)
         return inputFilesList
     except:
         errorMsg = "ERROR: Error while I/O %s" %(traceback.format_exc())
@@ -28,8 +29,8 @@ def getComments(language):
         print(errorMsg)
 
 
-def main(num_topics=10):
-    languages = ["hindi"]
+def main():
+    languages = ["hindi", "english"]
     
     for language in languages:
     

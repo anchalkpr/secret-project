@@ -2,20 +2,26 @@ import re
 from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
+import nltk.data
 from collections import Counter
 import numpy as np
 import polyglot
 from polyglot.text import Text, Word
 import codecs
-from hindi_stemmer import hi_stem
 from collections import Counter
+
+CONFIG_DIR = "../config/"
+sys.path.extend([CONFIG_DIR])
 import config3 as cfg
+from hindi_stemmer import hi_stem
 
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
 
-OUTPUT_DIR = "summaries/"
-CONFIG_DIR = ""
+pattern = re.compile("^[0-9]+ [0-9]+ ")
+
+#OUTPUT_DIR = "summaries/"
+OUTPUT_DIR = "../../../Data/generated_summaries/"
 
 class Document:
     def __init__(self, language, comments, docName):
@@ -25,7 +31,9 @@ class Document:
         self.stemSentenceMap = {}
         self.summary = []
         self.documentName = docName
-        self.comments = comments
+        self.comments = []
+        for comment in comments:
+            self.comments.append(re.sub(pattern, "", comment))                
 
 def getHindiStopWords():
     with codecs.open(CONFIG_DIR + "hindi_stopwords.txt", mode='r', encoding="utf-8") as stopWordsFile:
@@ -72,6 +80,9 @@ def clean_text(text):
 
 def tokenizer_hindi(document, sentence):
     stopWords = getHindiStopWords()
+    text = clean_text(sentence)
+    if len(text) < 1:
+        return []
     tokens = Text(clean_text(sentence))
     tokens = [hi_stem(tkn) for tkn in tokens.words]
     tokens = [t for t in tokens if t not in stopWords]
@@ -88,6 +99,11 @@ def tokenizer_english(document, sentence):
     tokens = text.lower().split()
     tokens = [lemmatizer(tkn) for tkn in tokens]
     tokens = [t for t in tokens if t not in stopWords]
+    for token in tokens:
+            if token in document.stemSentenceMap:
+                document.stemSentenceMap[token].append(sentence)
+            else:
+                document.stemSentenceMap[token] = [sentence]
     return tokens
     
 def document_tokenizer(document):
@@ -103,8 +119,7 @@ def document_tokenizer(document):
     document.tokens = Counter(tokens)
     
 def get_top_words(document):
-    n = cfg.SENTENCES_IN_SUMMARY
-    topWords = document.tokens.most_common(n)
+    topWords = document.tokens.most_common()
     topWords = [word for word, count in topWords]
     return topWords
     
@@ -127,14 +142,21 @@ def get_sentences(document):
         get_sentences_english(document)
     else:
         get_sentences_hindi(document)
-
+        
 def generate_summary(document):
     topWords = get_top_words(document)
+    n = cfg.SENTENCES_IN_SUMMARY
     for word in topWords:
-        document.summary.append(document.stemSentenceMap[word][0])
+        if n <= 0:
+            break
+        for i in range(len(document.stemSentenceMap[word])):
+            if document.stemSentenceMap[word][i] not in document.summary:
+                document.summary.append(document.stemSentenceMap[word][i])
+                n -= 1
+                break
         
 def output_summary(document):
-    outputFile = OUTPUT_DIR + document.documentName.replace(".txt","") + "_summary.txt"
+    outputFile = OUTPUT_DIR + document.documentName.replace(".txt","") + "_baseline.txt"
     with codecs.open(outputFile, mode="w", encoding="utf-8") as output:
         output.write("\n".join(document.summary))
         
