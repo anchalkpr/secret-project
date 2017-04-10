@@ -41,7 +41,7 @@ def getComments(language):
 
 
 def main(run_type, num_topics=100):
-    languages = ["english", "hindi"]
+    languages = ["hindi", "english"]
     
     for language in languages:
     
