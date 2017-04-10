@@ -9,7 +9,6 @@ DATA_DIR = "../../../Data/transliterated_and_segregated/"
 def getDocs(language):
     try:
         inputFilesList = [inputfile for inputfile in os.listdir(DATA_DIR) if inputfile.endswith("_"+language+".txt")]
-        print(inputFilesList)
         return inputFilesList
     except:
         errorMsg = "ERROR: Error while I/O %s" %(traceback.format_exc())
