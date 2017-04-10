@@ -347,4 +347,3 @@ class DocumentSummaries(object):
                         outputFile.write('\n ')
                     print()
                     outputFile.write('\n')
-
