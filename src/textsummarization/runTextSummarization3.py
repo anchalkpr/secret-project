@@ -6,8 +6,11 @@ import os
 import traceback
 import codecs
 
-#DATA_DIR = "../../Data/transliterated_and_segregated/"
-DATA_DIR = "example_data/"
+import re
+pattern = re.compile("^[0-9]+ [0-9]+ ")
+
+DATA_DIR = "../../Data/transliterated_and_segregated/"
+#DATA_DIR = "example_data/"
 
 
 def getDocs(language):
@@ -26,7 +29,9 @@ def getComments(language):
         docs = getDocs(language)
         for doc in docs:
             file_name = DATA_DIR + doc
-            cmts = codecs.open(file_name, mode='r', encoding="utf-8").readlines()
+            cmts = []
+            for line in codecs.open(file_name, mode='r', encoding="utf-8").readlines():
+                cmts.append(re.sub(pattern, "", line))
             discussionAndComments[doc] = cmts
             comments.extend(cmts)
         return discussionAndComments, comments

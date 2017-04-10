@@ -5,7 +5,8 @@ import polyglot
 from polyglot.text import Text, Word
 import codecs
 
-OUTPUT_DIR = "summaries/"
+#OUTPUT_DIR = "summaries/"
+OUTPUT_DIR = "../../Data/generated_summaries/"
 
 class topicSummary(object):
 
@@ -295,15 +296,15 @@ class DocumentSummaries(object):
     def display(self, doc_id):
         '''
         '''
-        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_summary" + ".txt"
+        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
         with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
             print ('The dominant topics in descending order are:')
-            outputFile.write("The dominant topics in descending order are:\n")
+            #outputFile.write("The dominant topics in descending order are:\n")
             for dtid in self.dominant_topic_ids:
                 print (dtid,)
-                outputFile.write("%s" %dtid)
+                #outputFile.write("%s" %dtid)
             print ('')
-            outputFile.write('\n')
+            #outputFile.write('\n')
             
             for k in range(self.num_dominant_topics):
                 if k!=None:
@@ -321,28 +322,29 @@ class DocumentSummaries(object):
                         continue
                 
                     print ('\nTopic {:d}'.format(dtid))
-                    outputFile.write('\n\nTopic {:d}'.format(dtid))
+                    #outputFile.write('\n\nTopic {:d}'.format(dtid))
                     print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
-                    outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
+                    #outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
                     for term, weight in zip(terms, weights):
                         print (' * {:s} ({:5.4f})'.format(term, weight))
-                        outputFile.write('\n')
-                        outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
+                        #outputFile.write('\n')
+                        #outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
                     
                     print ('\n\nThe selected sentences are:',)
-                    outputFile.write('\n\nThe selected sentences are:\n')
+                    #outputFile.write('\n\nThe selected sentences are:\n')
                     n_sentences = len(sentences)
                     for j in range(n_sentences):
                         item = sentences[j]
-                        outputFile.write('{:d},'.format(item[0]))
+                        #outputFile.write('{:d},'.format(item[0]))
                         print ('{:d},'.format(item[0]),)
                     print (' ')
-                    outputFile.write('\n ')
+                    #outputFile.write('\n ')
                     for j in range(n_sentences):
                         item = sentences[j]
                         sentence = item[2]
                         print (sentence)
                         outputFile.write(sentence)
+                        outputFile.write('\n ')
                     print()
                     outputFile.write('\n')
 
