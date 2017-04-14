@@ -9,8 +9,8 @@ import codecs
 import re
 pattern = re.compile("^[0-9]+ [0-9]+ ")
 
-DATA_DIR = "../../Data/transliterated_and_segregated/"
-#DATA_DIR = "example_data/"
+#DATA_DIR = "../../Data/transliterated_and_segregated/"
+DATA_DIR = "example_data/"
 
 
 def getDocs(language):
@@ -41,7 +41,7 @@ def getComments(language):
 
 
 def main(run_type, num_topics=100):
-    languages = ["hindi", "english"]
+    languages = ["english", "hindi"]
     
     for language in languages:
     
@@ -51,9 +51,9 @@ def main(run_type, num_topics=100):
         topicModel.fit(comments, language)
 
         for docName, document in discussionAndComments.items():
-            docSummaries = DocumentSummaries(topicModel, num_dominant_topics=1, number_of_sentences=4)
+            docSummaries = DocumentSummaries(topicModel, num_dominant_topics=4, number_of_sentences=4)
             docSummaries.summarize(document, language)
-            docSummaries.display(docName)
+            docSummaries.display1(docName)
             if run_type == "demo":
                 inp = input("Hit enter to continue:")
 

@@ -4,9 +4,12 @@ import numpy as np
 import polyglot
 from polyglot.text import Text, Word
 import codecs
-
-#OUTPUT_DIR = "summaries/"
-OUTPUT_DIR = "../../Data/generated_summaries/"
+import sys
+CONFIG_DIR = "config/"
+sys.path.extend([CONFIG_DIR])
+import config3 as cfg
+OUTPUT_DIR = "summaries/"
+#OUTPUT_DIR = "../../Data/generated_summaries/"
 
 class topicSummary(object):
 
@@ -294,6 +297,135 @@ class DocumentSummaries(object):
     
     
     def display(self, doc_id):
+        '''
+        '''
+        print("summarizing discussion: %s" %doc_id)
+        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
+        with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
+            print ('The dominant topics in descending order are:')
+            #outputFile.write("The dominant topics in descending order are:\n")
+            for dtid in self.dominant_topic_ids:
+                print (dtid,)
+                #outputFile.write("%s" %dtid)
+            print ('')
+            #outputFile.write('\n')
+            
+            for k in range(self.num_dominant_topics):
+                if k!=None:
+                    dtid = self.dominant_topic_ids[k]
+                    topicSummary = self.summary_data[dtid]
+                    terms = topicSummary.terms
+                    if not terms:
+                        #print("1111")
+                        continue
+                    weights = topicSummary.weights
+                    num_terms = len(terms)
+                    sentences = topicSummary.sentences
+                    if not sentences:
+                        #print("2222")
+                        continue
+                
+                    print ('\nTopic {:d}'.format(dtid))
+                    #outputFile.write('\n\nTopic {:d}'.format(dtid))
+                    print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
+                    #outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
+                    for term, weight in zip(terms, weights):
+                        print (' * {:s} ({:5.4f})'.format(term, weight))
+                        #outputFile.write('\n')
+                        #outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
+                    
+                    print ('\n\nThe selected sentences are:',)
+                    #outputFile.write('\n\nThe selected sentences are:\n')
+                    n_sentences = len(sentences)
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        #outputFile.write('{:d},'.format(item[0]))
+                        print ('{:d},'.format(item[0]),)
+                    print (' ')
+                    #outputFile.write('\n ')
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        sentence = item[2]
+                        print (sentence)
+                        outputFile.write(sentence)
+                        outputFile.write('\n ')
+                    print()
+                    outputFile.write('\n')
+                    
+    def display1(self, doc_id):
+        '''
+        '''
+        print("summarizing discussion: %s" %doc_id)
+        topic_sentences = []
+        summary = []
+        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
+        with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
+            print ('The dominant topics in descending order are:')
+            #outputFile.write("The dominant topics in descending order are:\n")
+            for dtid in self.dominant_topic_ids:
+                print (dtid,)
+                #outputFile.write("%s" %dtid)
+            print ('')
+            #outputFile.write('\n')
+            
+            for k in range(self.num_dominant_topics):
+                if k!=None:
+                    dtid = self.dominant_topic_ids[k]
+                    topicSummary = self.summary_data[dtid]
+                    terms = topicSummary.terms
+                    if not terms:
+                        #print("1111")
+                        continue
+                    weights = topicSummary.weights
+                    num_terms = len(terms)
+                    sentences = topicSummary.sentences
+                    if not sentences:
+                        #print("2222")
+                        continue
+                
+                    print ('\nTopic {:d}'.format(dtid))
+                    #outputFile.write('\n\nTopic {:d}'.format(dtid))
+                    print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
+                    #outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
+                    for term, weight in zip(terms, weights):
+                        print (' * {:s} ({:5.4f})'.format(term, weight))
+                        #outputFile.write('\n')
+                        #outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
+                    
+                    print ('\n\nThe selected sentences are:',)
+                    #outputFile.write('\n\nThe selected sentences are:\n')
+                    n_sentences = len(sentences)
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        #outputFile.write('{:d},'.format(item[0]))
+                        print ('{:d},'.format(item[0]),)
+                    print (' ')
+                    #outputFile.write('\n ')
+                    s = []
+                    for j in range(n_sentences):
+                        item = sentences[j]
+                        sentence = item[2]
+                        s.append(sentence)
+                        print (sentence)
+                        #outputFile.write(sentence)
+                        #outputFile.write('\n ')
+                    print()
+                    topic_sentences.append(s)
+                    #outputFile.write('\n')
+            print(topic_sentences)
+            print(type(topic_sentences))
+            n = cfg.SENTENCES_IN_SUMMARY
+            for k in range(len(topic_sentences)):
+                if n <= 0:
+                    break
+                for i in range(len(topic_sentences[k])):
+                    if topic_sentences[k][i] not in summary:
+                        summary.append(topic_sentences[k][i])
+                        n -= 1
+                        break
+            outputFile.write('\n'.join(summary))
+                    
+    def display2(self, doc_id):
         '''
         '''
         print("summarizing discussion: %s" %doc_id)
