@@ -6,16 +6,21 @@ import os
 import traceback
 import codecs
 
+CONFIG_DIR = "config/"
+sys.path.extend([CONFIG_DIR])
+import config3 as cfg
+
 import re
 pattern = re.compile("^[0-9]+ [0-9]+ ")
 
-#DATA_DIR = "../../Data/transliterated_and_segregated/"
-DATA_DIR = "example_data/"
+DATA_DIR = "../../Data/transliterated_and_segregated/"
+#DATA_DIR = "example_data/"
 
 
 def getDocs(language):
     try:
         inputFilesList = [inputfile for inputfile in os.listdir(DATA_DIR) if inputfile.endswith("_"+language+".txt")]
+        print(inputFilesList)
         return inputFilesList
     except:
         errorMsg = "ERROR: Error while I/O %s" %(traceback.format_exc())
@@ -40,20 +45,19 @@ def getComments(language):
         print(errorMsg)
 
 
-def main(run_type, num_topics=100):
-    languages = ["english", "hindi"]
+def main(run_type):
     
-    for language in languages:
+    for language in cfg.languages:
     
         discussionAndComments, comments = getComments(language)
         
-        topicModel = TopicModel(language, num_topics)
+        topicModel = TopicModel(language)
         topicModel.fit(comments, language)
 
         for docName, document in discussionAndComments.items():
-            docSummaries = DocumentSummaries(topicModel, num_dominant_topics=4, number_of_sentences=4)
+            docSummaries = DocumentSummaries(topicModel)
             docSummaries.summarize(document, language)
-            docSummaries.display1(docName)
+            docSummaries.display(docName)
             if run_type == "demo":
                 inp = input("Hit enter to continue:")
 

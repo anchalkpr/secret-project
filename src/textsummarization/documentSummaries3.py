@@ -5,11 +5,13 @@ import polyglot
 from polyglot.text import Text, Word
 import codecs
 import sys
+
 CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
 import config3 as cfg
-OUTPUT_DIR = "summaries/"
-#OUTPUT_DIR = "../../Data/generated_summaries/"
+
+#OUTPUT_DIR = "summaries/"
+OUTPUT_DIR = "../../Data/generated_summaries/"
 
 class topicSummary(object):
 
@@ -90,10 +92,10 @@ class DocumentSummaries(object):
     
     '''
     
-    def __init__(self, model, num_dominant_topics=5, number_of_sentences=5):
+    def __init__(self, model):
         # the bigramizer should be the same object that was trained in TopicModel
-        self.num_dominant_topics = num_dominant_topics
-        self.number_of_sentences= number_of_sentences
+        self.num_dominant_topics = cfg.num_dominant_topics
+        self.number_of_sentences = cfg.number_of_sentences
         self.lda = model.lda
         self.dictionary = model.dictionary
         self.bigramizer = model.bigramizer
@@ -295,7 +297,7 @@ class DocumentSummaries(object):
                 filtered_by_topic_id.append((k, item[0], item[1][1]))
         return filtered_by_topic_id
     
-    
+    """    
     def display(self, doc_id):
         '''
         '''
@@ -351,8 +353,9 @@ class DocumentSummaries(object):
                         outputFile.write('\n ')
                     print()
                     outputFile.write('\n')
+    """
                     
-    def display1(self, doc_id):
+    def display(self, doc_id):
         '''
         '''
         print("summarizing discussion: %s" %doc_id)
@@ -412,9 +415,7 @@ class DocumentSummaries(object):
                     print()
                     topic_sentences.append(s)
                     #outputFile.write('\n')
-            print(topic_sentences)
-            print(type(topic_sentences))
-            n = cfg.SENTENCES_IN_SUMMARY
+            n = cfg.number_of_sentences
             for k in range(len(topic_sentences)):
                 if n <= 0:
                     break
@@ -424,59 +425,4 @@ class DocumentSummaries(object):
                         n -= 1
                         break
             outputFile.write('\n'.join(summary))
-                    
-    def display2(self, doc_id):
-        '''
-        '''
-        print("summarizing discussion: %s" %doc_id)
-        outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
-        with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
-            print ('The dominant topics in descending order are:')
-            #outputFile.write("The dominant topics in descending order are:\n")
-            for dtid in self.dominant_topic_ids:
-                print (dtid,)
-                #outputFile.write("%s" %dtid)
-            print ('')
-            #outputFile.write('\n')
-            
-            for k in range(self.num_dominant_topics):
-                if k!=None:
-                    dtid = self.dominant_topic_ids[k]
-                    topicSummary = self.summary_data[dtid]
-                    terms = topicSummary.terms
-                    if not terms:
-                        #print("1111")
-                        continue
-                    weights = topicSummary.weights
-                    num_terms = len(terms)
-                    sentences = topicSummary.sentences
-                    if not sentences:
-                        #print("2222")
-                        continue
-                
-                    print ('\nTopic {:d}'.format(dtid))
-                    #outputFile.write('\n\nTopic {:d}'.format(dtid))
-                    print ('The top {:d} terms and corresponding weights are:'.format(num_terms))
-                    #outputFile.write('\nThe top {:d} terms and corresponding weights are:'.format(num_terms))
-                    for term, weight in zip(terms, weights):
-                        print (' * {:s} ({:5.4f})'.format(term, weight))
-                        #outputFile.write('\n')
-                        #outputFile.write(' * {:s} ({:5.4f})'.format(term, weight))
-                    
-                    print ('\n\nThe selected sentences are:',)
-                    #outputFile.write('\n\nThe selected sentences are:\n')
-                    n_sentences = len(sentences)
-                    for j in range(n_sentences):
-                        item = sentences[j]
-                        #outputFile.write('{:d},'.format(item[0]))
-                        print ('{:d},'.format(item[0]),)
-                    print (' ')
-                    #outputFile.write('\n ')
-                    for j in range(n_sentences):
-                        item = sentences[j]
-                        sentence = item[2]
-                        print (sentence)
-                        outputFile.write(sentence)
-                        outputFile.write('\n ')
-                    print()
-                    outputFile.write('\n')
+                   

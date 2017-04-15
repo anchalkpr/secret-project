@@ -65,23 +65,9 @@ def getEnglishStopWords():
             stop_words.add(item)
         return stop_words
 
-def clean_text(text):
-    text = text.replace(u"\u0964", '')
-    text = text.replace(u",", '')
-    text = text.replace(u".", '')
-    text = text.replace(u"/", '')
-    text = text.replace(u"?", '')
-    text = text.replace(u"-", '')
-    text = text.replace(u":", '')
-    text = text.replace(u"(", '')
-    text = text.replace(u")", '')
-    text = text.replace(u",", '')
-    text = text.replace(u";", '')
-    return text
-
 def tokenizer_hindi(document, sentence):
     stopWords = getHindiStopWords()
-    text = clean_text(sentence)
+    text = cfg.clean_text(sentence)
     if len(text) < 1:
         return []
     tokens = Text(clean_text(sentence))
@@ -146,7 +132,7 @@ def get_sentences(document):
         
 def generate_summary(document):
     topWords = get_top_words(document)
-    n = cfg.SENTENCES_IN_SUMMARY
+    n = cfg.number_of_sentences
     for word in topWords:
         if n <= 0:
             break

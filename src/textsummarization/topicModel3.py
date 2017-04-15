@@ -13,27 +13,14 @@ import codecs
 CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
 from hindi_stemmer import hi_stem
+import config3 as cfg
 
 
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
 
-def clean_text(text):
-    text = text.replace(u"\u0964", '')
-    text = text.replace(u",", '')
-    text = text.replace(u".", '')
-    text = text.replace(u"/", '')
-    text = text.replace(u"?", '')
-    text = text.replace(u"-", '')
-    text = text.replace(u":", '')
-    text = text.replace(u"(", '')
-    text = text.replace(u")", '')
-    text = text.replace(u",", '')
-    text = text.replace(u";", '')
-    return text
-
 def tokenizer_hindi(document):
-    tokens = Text(clean_text(document))
+    tokens = Text(cfg.clean_text(document))
     tokens = [hi_stem(tkn) for tkn in tokens.words]
     return tokens
 
@@ -104,18 +91,16 @@ class TopicModel(object):
         list of dominant topic ids, in decreasing order of dominance
     '''
 
-    def __init__(self, language, num_topics=100, min_word_count=8, 
-                 top_most_common_words=10, min_doc_length=40, 
-                 max_doc_length=1000, random_state=None):
-        self.num_topics = num_topics
-        self.min_word_count = min_word_count
-        self.top_most_common_words = top_most_common_words
+    def __init__(self, language):
+        self.num_topics = cfg.num_topics
+        self.min_word_count = cfg.min_word_count
+        self.top_most_common_words = cfg.top_most_common_words
         
-        assert max_doc_length > min_doc_length, \
+        assert cfg.max_doc_length > cfg.min_doc_length, \
                "max_doc_length must be greater than min_doc_length"
-        self.min_doc_length = min_doc_length
-        self.max_doc_length = max_doc_length
-        self.random_state = random_state
+        self.min_doc_length = cfg.min_doc_length
+        self.max_doc_length = cfg.max_doc_length
+        self.random_state = cfg.random_state
         
         # natural language processing
         if language == "hindi":
