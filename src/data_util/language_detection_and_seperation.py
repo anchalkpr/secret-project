@@ -1,38 +1,33 @@
-from polyglot.text import Text
-
-#from polyglot.transliteration import Transliterator
-#from google.cloud import translate
-import os
-import ntpath
-import traceback
-import codecs
-import json, urllib, urllib2
-#from urllib.request import urlopen
+import os, ntpath, codecs, traceback
+import json, urllib
 import string
 from nltk.tokenize import wordpunct_tokenize
+from googletrans import Translator
+from langdetect import detect
 
-total_count = 0
-package_count = 0
-sentences_skipped = 0
-'''
-def detect_language(text):
-    """Detects the text's language using google cloud."""
-    translate_client = translate.Client()
 
-    # Text can also be a sequence of strings, in which case this method
-    # will return a sequence of results for each text.
-    result = translate_client.detect_language(text)
+def detect_lang_googlepack(text):
+    translator = Translator()
+    try:
+        obj = translator.detect(text)
+        return obj.lang
+    except:
+        print ("Error in "+text)
+        #print(traceback.format_exc(3))
+        return 'un'
 
-    print('Text: {}'.format(text))
-    print('Confidence: {}'.format(result['confidence']))
-    print('Language: {}'.format(result['language']))
-'''
+
+def detect_lang(text):
+    try:
+        return detect(text)
+    except:
+        return detect_lang_googlepack(text)
 
 
 def google_trans_call(word):
     param = "text=" + urllib.quote_plus(word) + "&ime=transliteration_en_hi&ie=utf-8&oe=utf-8"
     url = "http://www.google.com/inputtools/request?" + param
-    jsonObj = json.loads(urllib2.urlopen(url).read())
+    jsonObj = json.loads(urllib.request(url).read())
     #print jsonObj
     try:
         val = jsonObj[1][0][1][0]
@@ -57,18 +52,12 @@ def transliterate_to_hindi(sentence):
     global total_count
     trans_sent = transliterate_google(sentence)
     total_count+=1
-    '''
-    global package_count
-    package_count+=1
-    english_hindi_transliterator = Transliterator(source_lang="en", target_lang="hi")
-    token_list = sentence.split(' ')
-    transliterated_sent = ""
-    for token in token_list:
-        transliterated_sent += english_hindi_transliterator.transliterate(token) + " "
-    return (transliterated_sent.strip(), "polyglot")
-    '''
     return trans_sent
 
+
+total_count = 0
+package_count = 0
+sentences_skipped = 0
 
 path_to_dir = "/Users/vault/Desktop/Data"
 path_to_output_dir = "/Users/vault/Desktop/Data_output"
@@ -101,30 +90,26 @@ for file_path in file_list:
                     continue
                 comment = split_data[2]
 
-                text = Text(comment)
-
-                if text.language.code == "hi":
-                    hindi_list.append(line)
-                    #hindi_list.append("\n")
-                elif text.language.code == "en":
+                language = detect_lang(comment)
+                if language == "en":
                     english_list.append(line)
-                    #english_list.append("\n")
+                elif language == "hi":
+                    hindi_list.append(line)
                 else:
-                    try:
-                        transliterated_line = transliterate_to_hindi(comment)[0]
-                    except:
-                        print ("Error in transliteration. Skipping line: "+line)
-                        unknown_list.append(line)
-                        sentences_skipped += 1
-                        continue
-                    transliterated_lang = Text(transliterated_line)
-                    if transliterated_lang.language.code == "hi":
+                    google_lang = detect_lang_googlepack(comment)
+                    #for a hindi comment in Latin - google detects the language as Hindi
+                    if google_lang == "hi":
+                        try:
+                            transliterated_line = transliterate_to_hindi(comment)[0]
+                        except:
+                            print("Error in transliteration. Skipping line: " + line)
+                            unknown_list.append(line)
+                            sentences_skipped += 1
+                            continue
                         line = split_data[0] + " " + split_data[1] + " " + transliterated_line
                         hindi_list.append(line)
-                        #hindi_list.append("\n")
                     else:
                         unknown_list.append(line)
-                        #unknown_list.append("\n")
                 count+=1
             except:
                 print (traceback.format_exc(3))

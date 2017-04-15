@@ -3,7 +3,7 @@ import os, ntpath
 import codecs
 
 #path to directory with every discussion split into english and hindi sentence
-path_to_dir = "/Users/vault/Desktop/Data_output"
+path_to_dir = "/Users/vault/Desktop/transliterated_and_segregated_output"
 
 #list of files without
 file_set = set()
