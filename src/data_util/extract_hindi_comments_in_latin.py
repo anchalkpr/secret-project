@@ -1,3 +1,5 @@
+#use python2
+
 from polyglot.text import Text
 
 import os
