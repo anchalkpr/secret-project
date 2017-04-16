@@ -12,7 +12,7 @@ path = ""
 path_output = ""
 if inp.lower().startswith("h"):
     path = path_to_NB_hindi_data
-    path_output = path_to_NB_hindi_data
+    path_output = path_to_NB_hindi_output
     print ("Displaying Hindi data: ")
 else:
     path = path_to_NB_english_data
