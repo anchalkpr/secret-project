@@ -8,10 +8,10 @@ import sys
 
 CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
-import config3 as cfg
+from textsummarization.config import config3 as cfg
 
 #OUTPUT_DIR = "summaries/"
-OUTPUT_DIR = "../../Data/generated_summaries/"
+OUTPUT_DIR = "../data/generated_summaries/"
 
 class topicSummary(object):
 
@@ -354,13 +354,19 @@ class DocumentSummaries(object):
                     print()
                     outputFile.write('\n')
     """
-                    
+
+    def rreplace(self, s, old, new):
+        li = s.rsplit(old, 1)
+        return new.join(li)
+
+
     def display(self, doc_id):
         '''
         '''
         print("summarizing discussion: %s" %doc_id)
         topic_sentences = []
         summary = []
+        doc_id = self.rreplace(doc_id, "_", "-")
         outputFileName = OUTPUT_DIR + doc_id.replace(".txt", "") + "_lda" + ".txt"
         with codecs.open(outputFileName, mode='w', encoding="utf-8") as outputFile:
             print ('The dominant topics in descending order are:')

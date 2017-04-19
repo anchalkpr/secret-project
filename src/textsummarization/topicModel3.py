@@ -10,19 +10,21 @@ import polyglot
 from polyglot.text import Text, Word
 import codecs
 
-CONFIG_DIR = "config/"
+CONFIG_DIR = "textsummarization/config/"
 sys.path.extend([CONFIG_DIR])
-from hindi_stemmer import hi_stem
-import config3 as cfg
+from textsummarization.config.hindi_stemmer import hi_stem
+from textsummarization.config import config3 as cfg
 
 
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
 
+
 def tokenizer_hindi(document):
     tokens = Text(cfg.clean_text(document))
     tokens = [hi_stem(tkn) for tkn in tokens.words]
     return tokens
+
 
 def tokenizer_english(document):
     """

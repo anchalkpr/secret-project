@@ -1,19 +1,20 @@
 import pickle
-from topicModel3 import TopicModel
-from documentSummaries3 import DocumentSummaries
+from textsummarization.topicModel3 import TopicModel
+from textsummarization.documentSummaries3 import DocumentSummaries
 import sys
 import os
 import traceback
 import codecs
+from textsummarization.config import config3 as cfg
 
 CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
-import config3 as cfg
+
 
 import re
 pattern = re.compile("^[0-9]+ [0-9]+ ")
 
-DATA_DIR = "../../Data/transliterated_and_segregated/"
+DATA_DIR = "../data/transliterated_and_separated/"
 #DATA_DIR = "example_data/"
 
 
