@@ -8,10 +8,10 @@ import sys
 
 CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
-from textsummarization.config import config3 as cfg
+import config3 as cfg
 
 #OUTPUT_DIR = "summaries/"
-OUTPUT_DIR = "../data/generated_summaries/"
+OUTPUT_DIR = "../../data/generated_summaries/"
 
 class topicSummary(object):
 

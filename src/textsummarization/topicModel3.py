@@ -10,11 +10,10 @@ import polyglot
 from polyglot.text import Text, Word
 import codecs
 
-CONFIG_DIR = "textsummarization/config/"
+CONFIG_DIR = "config/"
 sys.path.extend([CONFIG_DIR])
-from textsummarization.config.hindi_stemmer import hi_stem
-from textsummarization.config import config3 as cfg
-
+import config3 as cfg
+from hindi_stemmer import hi_stem
 
 wnl = WordNetLemmatizer()
 lemmatizer = wnl.lemmatize
