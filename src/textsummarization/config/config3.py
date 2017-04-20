@@ -8,7 +8,7 @@ languages = ["english", "hindi"]
 
 # default topic model parameters
 num_topics = 100
-min_word_count = 8
+min_word_count = 10
 top_most_common_words = 10
 '''
 if sys.argv[1] is not None:
