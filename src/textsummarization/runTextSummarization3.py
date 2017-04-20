@@ -13,7 +13,7 @@ import config3 as cfg
 import re
 pattern = re.compile("^[0-9]+ [0-9]+ ")
 
-DATA_DIR = "../../Data/transliterated_and_segregated/"
+DATA_DIR = "../../data/transliterated_and_separated/"
 #DATA_DIR = "example_data/"
 
 

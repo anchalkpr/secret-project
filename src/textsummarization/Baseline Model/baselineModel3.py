@@ -22,7 +22,7 @@ lemmatizer = wnl.lemmatize
 pattern = re.compile("^[0-9]+ [0-9]+ ")
 
 #OUTPUT_DIR = "summaries/"
-OUTPUT_DIR = "../../../Data/generated_summaries/"
+OUTPUT_DIR = "../../../data/generated_summaries/"
 
 class Document:
     def __init__(self, language, comments, docName):
@@ -70,7 +70,7 @@ def tokenizer_hindi(document, sentence):
     text = cfg.clean_text(sentence)
     if len(text) < 1:
         return []
-    tokens = Text(clean_text(sentence))
+    tokens = Text(text)
     tokens = [hi_stem(tkn) for tkn in tokens.words]
     tokens = [t for t in tokens if t not in stopWords]
     for token in tokens:
