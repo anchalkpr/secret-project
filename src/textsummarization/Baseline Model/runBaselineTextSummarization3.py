@@ -3,7 +3,7 @@ import traceback
 import codecs
 from baselineModel3 import document_summarizer
 
-DATA_DIR = "../../../Data/transliterated_and_segregated/"
+DATA_DIR = "../../../data/transliterated_and_separated/"
 #DATA_DIR = "example_data/"
 
 def getDocs(language):
