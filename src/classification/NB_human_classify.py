@@ -1,11 +1,11 @@
 import os, ntpath, codecs
 import sys
 
-path_to_NB_english_data = "/Users/vault/Desktop/NB/nb_sent_english_1.txt"
-path_to_NB_hindi_data = "/Users/vault/Desktop/NB/nb_sent_hindi_1.txt"
+path_to_NB_english_data = "/Users/vault/Desktop/NB/sentences/nb_sent_english_3.txt"
+path_to_NB_hindi_data = "/Users/vault/Desktop/NB/sentences/nb_sent_hindi_3.txt"
 
-path_to_NB_english_output = "/Users/vault/Desktop/nb_train_english_1.txt"
-path_to_NB_hindi_output = "/Users/vault/Desktop/nb_train_hindi_1.txt"
+path_to_NB_english_output = "/Users/vault/Desktop/nb_train_english_3.txt"
+path_to_NB_hindi_output = "/Users/vault/Desktop/nb_train_hindi_3.txt"
 
 inp = input("Enter E for english data and H for hindi data: ")
 path = ""
