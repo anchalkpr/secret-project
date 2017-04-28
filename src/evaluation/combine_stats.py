@@ -9,7 +9,6 @@ discussion_list_1 = ["give-inputs-hindi-and-tamil-online-handwriting-recognition
                    "inviting-suggestions-manual-procurement-goods"]
 
 #form 2 of 2
-
 discussion_list_2 = ["let-world-see-incredibleindia-through-your-own-eyes",
                    "open-forum-discussion-surajya",
                    "republic-day-walking-down-memory-lane",
@@ -17,9 +16,7 @@ discussion_list_2 = ["let-world-see-incredibleindia-through-your-own-eyes",
                    "statuecleaning-my-contribution-towards-nation-building",
                    "suggestions-role-voluntary-consumer-organisations-tackling-menace-misleading"]
 
-path_to_eval_csv = "/Users/vault/Desktop/eval1.csv"
-path_to_output = "/Users/vault/Desktop/eval1_summary.csv"
-discussion_list = discussion_list_1
+
 class Val:
     def __init__(self):
         self.lda = float(0.0)
@@ -35,6 +32,15 @@ class Val:
     def __str__(self):
         return "Count: " + str(self.count)
 
+def add_val(val1, val2):
+    val = Val()
+    val.lda = val1.lda + val2.lda
+    val.human = val1.human + val2.human
+    val.baseline = val1.baseline + val2.baseline
+    val.count = val1.count + val2.count
+
+    return val
+
 def get_val(row, start, val_obj):
     lda = int(row[start])
     baseline = int(row[start + 2])
@@ -47,9 +53,8 @@ def get_val(row, start, val_obj):
 
     return val_obj
 
-def get_csv_lines(map, append):
+def get_csv_lines(map, append, discussion_list):
     list = []
-    list.append("Discussion Title, Human, Baseline, LDA")
 
     lda = human = baseline = float(0.0)
     count = 0
@@ -63,9 +68,13 @@ def get_csv_lines(map, append):
         human += val.human
         baseline += val.baseline
         count += 1
-    list.append(",,,")
-    list.append("Average," + str(human/count) + "," + str(baseline/count) + "," + str(lda/count))
-    return list
+
+    val = Val()
+    val.lda = lda
+    val.human = human
+    val.baseline = baseline
+    val.count = count
+    return list, val
 
 
 def finalize_val(map):
@@ -75,26 +84,34 @@ def finalize_val(map):
 
 discussion_val_map = {}
 discussion_coh_val_map = {}
-with open(path_to_eval_csv) as csvfile:
-    readCSV = csv.reader(csvfile, delimiter=',')
-    for i, row in enumerate(readCSV):
-        if i == 0:
-            continue
 
-        for disc in range(0, 12):
-            start = (disc * 3) + 2
-            start_coh = ((disc) * 3) + 3
-            discussion_title = discussion_list[int(disc/2)]
-            if(disc%2 == 0):
-                discussion_title = discussion_title + "_english"
-            else:
-                discussion_title = discussion_title + "_hindi"
+def pop_map(path_to_file, discussion_list):
+    with open(path_to_file) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        for i, row in enumerate(readCSV):
+            if i == 0:
+                continue
 
-            val_obj = discussion_val_map.get(discussion_title, Val())
-            val_coh_obj = discussion_coh_val_map.get(discussion_title, Val())
+            for disc in range(0, 12):
+                start = (disc * 3) + 2
+                start_coh = ((disc) * 3) + 3
+                discussion_title = discussion_list[int(disc/2)]
+                if(disc%2 == 0):
+                    discussion_title = discussion_title + "_english"
+                else:
+                    discussion_title = discussion_title + "_hindi"
 
-            discussion_val_map[discussion_title] = get_val(row, start, val_obj)
-            discussion_coh_val_map[discussion_title] = get_val(row, start_coh, val_coh_obj)
+                val_obj = discussion_val_map.get(discussion_title, Val())
+                val_coh_obj = discussion_coh_val_map.get(discussion_title, Val())
+
+                discussion_val_map[discussion_title] = get_val(row, start, val_obj)
+                discussion_coh_val_map[discussion_title] = get_val(row, start_coh, val_coh_obj)
+
+
+path_to_output = "/Users/vault/Desktop/eval_summary.csv"
+pop_map("/Users/vault/Desktop/eval1.csv", discussion_list_1)
+pop_map("/Users/vault/Desktop/eval2.csv", discussion_list_2)
+
 
 finalize_val(discussion_val_map)
 finalize_val(discussion_coh_val_map)
@@ -102,23 +119,48 @@ finalize_val(discussion_coh_val_map)
 master_list = []
 
 master_list.append("English Summary,,,")
-english_lines = get_csv_lines(discussion_val_map, "_english")
+master_list.append("Discussion Title, Human, Baseline, LDA")
+english_lines, eng_val_1 = get_csv_lines(discussion_val_map, "_english", discussion_list_1)
 master_list += english_lines
+english_lines, eng_val_2 = get_csv_lines(discussion_val_map, "_english", discussion_list_2)
+master_list += english_lines
+eng_val = add_val(eng_val_1, eng_val_2)
+eng_val.finalize()
+master_list.append("Average," + str(eng_val.human) + "," + str(eng_val.baseline) + "," + str(eng_val.lda))
 
 master_list.append(",,,")
 master_list.append("Hindi Summary,,,")
-hindi_lines = get_csv_lines(discussion_val_map, "_hindi")
+master_list.append("Discussion Title, Human, Baseline, LDA")
+hindi_lines, hin_val_1 = get_csv_lines(discussion_val_map, "_hindi", discussion_list_1)
 master_list += hindi_lines
+hindi_lines, hin_val_2 = get_csv_lines(discussion_val_map, "_hindi", discussion_list_2)
+master_list += hindi_lines
+hin_val = add_val(hin_val_1, hin_val_2)
+hin_val.finalize()
+master_list.append("Average," + str(hin_val.human) + "," + str(hin_val.baseline) + "," + str(hin_val.lda))
 
 master_list.append(",,,")
 master_list.append("English Coherence Summary,,,")
-english_coh_lines = get_csv_lines(discussion_coh_val_map, "_english")
+master_list.append("Discussion Title, Human, Baseline, LDA")
+english_coh_lines, engc_val_1 = get_csv_lines(discussion_coh_val_map, "_english", discussion_list_1)
 master_list += english_coh_lines
+english_coh_lines, engc_val_2 = get_csv_lines(discussion_coh_val_map, "_english", discussion_list_2)
+master_list += english_coh_lines
+engc_val = add_val(engc_val_1, engc_val_2)
+engc_val.finalize()
+master_list.append("Average," + str(engc_val.human) + "," + str(engc_val.baseline) + "," + str(engc_val.lda))
 
 master_list.append(",,,")
 master_list.append("Hindi Coherence Summary,,,")
-hindi_coh_lines = get_csv_lines(discussion_coh_val_map, "_hindi")
+master_list.append("Discussion Title, Human, Baseline, LDA")
+hindi_coh_lines, hinc_val_1 = get_csv_lines(discussion_coh_val_map, "_hindi", discussion_list_1)
 master_list += hindi_coh_lines
+hindi_coh_lines, hinc_val_2 = get_csv_lines(discussion_coh_val_map, "_hindi", discussion_list_2)
+master_list += hindi_coh_lines
+hinc_val = add_val(hinc_val_1, hinc_val_2)
+hinc_val.finalize()
+master_list.append("Average," + str(hinc_val.human) + "," + str(hinc_val.baseline) + "," + str(hinc_val.lda))
+
 
 with open(path_to_output, "w") as output:
     for line in master_list:
