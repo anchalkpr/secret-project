@@ -1,7 +1,7 @@
 # nlp-csci544-project
 Final Project for CSCI 544 - NLP Applications 
 
-Text summarization of comments in myGOV.in
+# Text summarization of comments in myGOV.in
 
 In 2014, the Government of India launched a platform called myGOV for citizens to share their views on matters of national interest. Majority of the comments on the discussions are either in English or Hindi. Hundreds of comments are made on each discussion which makes it difficult to collate people's concerns. On most websites, comments are an afterthought, but on myGOV discussion forums, the comments are the highlight, where the government can listen to concerns of its citizens. Therefore its important to summarize most common themes of the discussion and identify dominant and recurrent views on the discussion topic.
 
